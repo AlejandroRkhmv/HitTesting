@@ -10,13 +10,48 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    /*
+    +----------------------------+
+    |A                           |
+    |+--------+   +------------+ |
+    ||B       |   |C           | |
+    ||        |   |+----------+| |
+    |+--------+   ||D         || |
+    |             |+----------+| |
+    |             +------------+ |
+    +----------------------------+
+
+     Нажатие на D. Вот что произойдет:
+
+     hitTest:withEvent:вызывается для A, самого верхнего представления иерархии представлений.
+     pointInside:withEvent:вызывается рекурсивно для каждого представления.
+     pointInside:withEvent:вызывается A и возвращается YES
+     pointInside:withEvent:вызывается B и возвращается NO
+     pointInside:withEvent:вызывается C и возвращается YES
+     pointInside:withEvent:вызывается D и возвращается YES
+     
+     В представлениях, которые вернули YES, он будет смотреть вниз по иерархии, чтобы увидеть подпредставление, где произошло касание. В этом случае, из A, Cи D, это будет D.
+     D будет просмотром хит-теста
+    */
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        //let viewController = ViewController()
+        //let viewController = MultyTouchViewController()
+        let viewController = DragViewController()
+        //let viewController = SecondViewController()
+        //let viewController = ThirdViewController()
+        //let viewController = ResponderViewController()
+        //let viewController = LayerViewController()
+        //let viewController = AllViewController()
+        
+        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+        window?.windowScene = windowScene
+        window?.rootViewController = viewController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
